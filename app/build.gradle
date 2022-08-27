@@ -51,4 +51,20 @@ dependencies {
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
     // ssp library for support all sizes on the screen
     implementation 'com.intuit.ssp:ssp-android:1.0.6'
+    // Networking
+    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.3'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    debugImplementation "com.github.chuckerteam.chucker:library:3.4.0"
+    releaseImplementation "com.github.chuckerteam.chucker:library-no-op:3.4.0"
+    implementation 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2'
+    // Moshi
+    implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
+    implementation 'com.squareup.moshi:moshi-kotlin:1.12.0'
+    // MVVM Components
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    // ViewModel + Coroutines
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    // Navigation component
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.1'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.5.1'
 }
