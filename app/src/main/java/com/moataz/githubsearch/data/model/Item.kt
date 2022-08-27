@@ -5,6 +5,6 @@ data class Item(
     val full_name: String,
     val description: String,
     val html_url: String,
-    val stargazers_count: Int,
+    val stargazers_count: String,
     val created_at: String,
 )
