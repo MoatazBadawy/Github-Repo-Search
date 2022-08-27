@@ -1,7 +1,8 @@
-package com.moataz.githubsearch
+package com.moataz.githubsearch.ui.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.moataz.githubsearch.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

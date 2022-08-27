@@ -1,4 +1,4 @@
-package com.moataz.githubsearch.data
+package com.moataz.githubsearch.data.model
 
 data class Item(
     val id: Int,

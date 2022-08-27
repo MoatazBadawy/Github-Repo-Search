@@ -1,4 +1,4 @@
-package com.moataz.githubsearch.data
+package com.moataz.githubsearch.data.model
 
 data class RepoResponse(
     val incomplete_results: Boolean,
