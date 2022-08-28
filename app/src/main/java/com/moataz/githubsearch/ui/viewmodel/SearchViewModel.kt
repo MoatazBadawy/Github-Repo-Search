@@ -17,7 +17,6 @@ class SearchViewModel : ViewModel() {
 
     private fun search() {
         viewModelScope.launch {
-            searchResponse.postValue(Resource.Loading)
             val response = searchRepository.getSearchResult(searchText, page)
             response.collect { result ->
                 searchResponse.postValue(result)

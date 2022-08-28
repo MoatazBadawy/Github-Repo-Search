@@ -67,9 +67,11 @@ class MainActivity : AppCompatActivity() {
                         is Resource.Error -> {
                             binding.apply {
                                 progressBar.visibility = View.GONE
-                                mainImage.visibility = View.VISIBLE
                                 welcomeSearchText.visibility = View.GONE
+                                adapter.clearData()
+                                mainImage.visibility = View.VISIBLE
                                 errorSearchText.visibility = View.VISIBLE
+
                             }
                         }
                     }
