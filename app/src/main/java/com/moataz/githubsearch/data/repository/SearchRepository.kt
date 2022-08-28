@@ -11,10 +11,9 @@ import kotlinx.coroutines.flow.flowOn
 
 class SearchRepository {
 
-    suspend fun getSearchResult(query: String): Flow<Resource<SearchResponse>> = flow {
-        emit(Resource.Loading)
+    suspend fun getSearchResult(query: String, page: Int): Flow<Resource<SearchResponse>> = flow {
         try {
-            val response = ApiClient.searchApi.getSearchResponse(query)
+            val response = ApiClient.searchApi.getSearchResponse(query, page)
             emit(Resource.Success(response))
         } catch (e: Exception) {
             emit(Resource.Error(e.message ?: "Error"))
