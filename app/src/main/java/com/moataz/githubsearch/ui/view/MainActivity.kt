@@ -11,13 +11,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.moataz.githubsearch.data.model.Item
 import com.moataz.githubsearch.databinding.ActivityMainBinding
 import com.moataz.githubsearch.ui.adapter.SearchAdapter
+import com.moataz.githubsearch.ui.viewmodel.SearchMoreViewModel
 import com.moataz.githubsearch.ui.viewmodel.SearchViewModel
 import com.moataz.githubsearch.utils.statue.Resource
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private val viewModel: SearchViewModel by viewModels()
+    private val searchViewModel: SearchViewModel by viewModels()
+    private val searchMoreViewModel: SearchMoreViewModel by viewModels()
     private val adapter = SearchAdapter()
 
     private var currentPage = 1
@@ -47,7 +49,7 @@ class MainActivity : AppCompatActivity() {
     private fun getSearchResult() {
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                viewModel.getSearchResponse(query!!, currentPage).observe(this@MainActivity) {
+                searchViewModel.getSearchResponse(query!!, currentPage).observe(this@MainActivity) {
                     when (it) {
                         is Resource.Loading -> {
                             binding.apply {
@@ -61,6 +63,7 @@ class MainActivity : AppCompatActivity() {
                             binding.apply {
                                 progressBar.visibility = View.GONE
                             }
+                            newList.clear()
                             newList.addAll(it.data!!.items)
                             adapter.updateList(newList)
                         }
@@ -100,7 +103,7 @@ class MainActivity : AppCompatActivity() {
 
                 if (lastVisibleItemPosition == totalItemCount - 1) {
                     currentPage++
-                    viewModel.getSearchResponse(
+                    searchMoreViewModel.getMoreSearchResponseResult(
                         binding.searchView.query.toString(), currentPage
                     )
                         .observe(this@MainActivity) {
