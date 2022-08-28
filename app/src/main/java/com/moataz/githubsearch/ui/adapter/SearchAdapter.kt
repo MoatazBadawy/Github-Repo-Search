@@ -34,6 +34,12 @@ class SearchAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         (holder as SearchViewHolder).itemRepoBinding.repoModel = search
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    fun clearData() {
+        items.clear()
+        notifyDataSetChanged()
+    }
+
     override fun getItemCount(): Int {
         return items.size
     }

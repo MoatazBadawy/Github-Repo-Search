@@ -29,6 +29,5 @@ object ApiClient {
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .build()
 
-
     val searchApi: SearchAPIService = retrofit.create(SearchAPIService::class.java)
 }
