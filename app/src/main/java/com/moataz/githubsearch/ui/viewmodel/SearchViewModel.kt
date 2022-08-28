@@ -1,33 +1,29 @@
 package com.moataz.githubsearch.ui.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.moataz.githubsearch.data.model.SearchResponse
-import com.moataz.githubsearch.data.repository.SearchRepository
-import com.moataz.githubsearch.utils.statue.Resource
-import kotlinx.coroutines.launch
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.moataz.githubsearch.data.model.Item
+import com.moataz.githubsearch.data.repository.RepoPagingSource
+import com.moataz.githubsearch.data.request.ApiClient
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 
 class SearchViewModel : ViewModel() {
-    private var searchText = ""
-    private var page = 1
-    private val searchRepository = SearchRepository()
-    private val searchResponse: MutableLiveData<Resource<SearchResponse>> = MutableLiveData()
+    private val apiClient = ApiClient.searchApi
 
-    private fun search() {
-        viewModelScope.launch {
-            val response = searchRepository.getSearchResult(searchText, page)
-            response.collect { result ->
-                searchResponse.postValue(result)
-            }
-        }
-    }
-
-    fun getSearchResponse(searchText: String, page: Int): LiveData<Resource<SearchResponse>> {
-        this.searchText = searchText
-        this.page = page
-        search()
-        return searchResponse
+    fun getSearchResult(query: String): Flow<PagingData<Item>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 35,
+                maxSize = 60,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = { RepoPagingSource(apiClient, query) }
+        ).flow.cachedIn(viewModelScope).flowOn(Dispatchers.IO)
     }
 }
