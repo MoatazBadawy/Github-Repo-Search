@@ -6,14 +6,14 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.moataz.githubsearch.R
-import com.moataz.githubsearch.data.model.SearchResponse
+import com.moataz.githubsearch.data.model.Item
 import com.moataz.githubsearch.databinding.ItemRepoBinding
 
 class SearchAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var items: SearchResponse? = null
+    private var items: MutableList<Item> = mutableListOf()
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setData(items: SearchResponse?) {
+    fun updateList(items: MutableList<Item>) {
         this.items = items
         notifyDataSetChanged()
     }
@@ -30,18 +30,12 @@ class SearchAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val search = items!!.items[position]
+        val search = items[position]
         (holder as SearchViewHolder).itemRepoBinding.repoModel = search
     }
 
     override fun getItemCount(): Int {
-        return if (items == null) 0 else items!!.items.size
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun clearDataFromAdappter() {
-        items = null
-        notifyDataSetChanged()
+        return items.size
     }
 
     inner class SearchViewHolder(var itemRepoBinding: ItemRepoBinding) :
