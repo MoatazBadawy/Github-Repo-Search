@@ -10,11 +10,18 @@ import com.moataz.githubsearch.data.model.Item
 import com.moataz.githubsearch.databinding.ItemRepoBinding
 
 class SearchAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var items: MutableList<Item> = mutableListOf()
+    private var items: ArrayList<Item> = ArrayList()
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateList(items: MutableList<Item>) {
-        this.items = items
+    fun setData(items: List<Item>) {
+        this.items.clear()
+        this.items.addAll(items)
+        notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateData(items: List<Item>) {
+        this.items.addAll(items)
         notifyDataSetChanged()
     }
 

@@ -11,13 +11,14 @@ import kotlinx.coroutines.launch
 
 class SearchMoreViewModel : ViewModel() {
     private var searchText = ""
-    private var page = 1
+    var currentPage = 1
     private val searchRepository = SearchRepository()
     private val searchResponse: MutableLiveData<Resource<SearchResponse>> = MutableLiveData()
 
-    private fun search() {
+    private fun searchMore() {
+        currentPage++
         viewModelScope.launch {
-            val response = searchRepository.getSearchResult(searchText, page)
+            val response = searchRepository.getSearchResult(searchText, currentPage)
             response.collect { result ->
                 searchResponse.postValue(result)
             }
@@ -26,8 +27,8 @@ class SearchMoreViewModel : ViewModel() {
 
     fun getMoreSearchResponseResult(searchText: String, page: Int): LiveData<Resource<SearchResponse>> {
         this.searchText = searchText
-        this.page = page
-        search()
+        this.currentPage = page
+        searchMore()
         return searchResponse
     }
 }
