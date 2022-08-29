@@ -1,29 +1,28 @@
 package com.moataz.githubsearch.ui.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.moataz.githubsearch.data.model.Item
-import com.moataz.githubsearch.data.repository.RepoPagingSource
-import com.moataz.githubsearch.data.request.ApiClient
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOn
+import com.moataz.githubsearch.data.repository.SearchRepository
 
 class SearchViewModel : ViewModel() {
-    private val apiClient = ApiClient.searchApi
+    private val repository = SearchRepository()
 
-    fun getSearchResult(query: String): Flow<PagingData<Item>> {
-        return Pager(
-            config = PagingConfig(
-                pageSize = 35,
-                maxSize = 60,
-                enablePlaceholders = false
-            ),
-            pagingSourceFactory = { RepoPagingSource(apiClient, query) }
-        ).flow.cachedIn(viewModelScope).flowOn(Dispatchers.IO)
+    private val state: SavedStateHandle = SavedStateHandle()
+    private val currentQuery = state.getLiveData(CURRENT_QUERY, DEFAULT_QUERY)
+
+    val searchResponse = currentQuery.switchMap { queryString ->
+        repository.getSearchResult(queryString).cachedIn(viewModelScope)
+    }
+
+    fun search(query: String) {
+        currentQuery.value = query
+    }
+
+    companion object {
+        private const val CURRENT_QUERY = "current_query"
+        private val DEFAULT_QUERY: String? = null
     }
 }

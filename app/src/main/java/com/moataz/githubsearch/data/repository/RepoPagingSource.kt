@@ -11,7 +11,7 @@ private const val START_PAGE_INDEX = 1
 
 class RepoPagingSource(
     private val searchApi: SearchAPIService,
-    private val query: String
+    private val query: String?
 ) : PagingSource<Int, Item>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Item> {
