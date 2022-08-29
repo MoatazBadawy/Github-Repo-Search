@@ -2,17 +2,23 @@ package com.moataz.githubsearch.ui.view
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.View
 import android.widget.SearchView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
+ feature/paging_library
+import com.moataz.githubsearch.databinding.ActivityMainBinding
+import com.moataz.githubsearch.ui.adapter.SearchAdapter
+import com.moataz.githubsearch.ui.adapter.SearchRepoStateAdapter
+
 import androidx.recyclerview.widget.RecyclerView
 import com.moataz.githubsearch.databinding.ActivityMainBinding
 import com.moataz.githubsearch.ui.adapter.SearchAdapter
 import com.moataz.githubsearch.ui.viewmodel.SearchMoreViewModel
+ develop
 import com.moataz.githubsearch.ui.viewmodel.SearchViewModel
-import com.moataz.githubsearch.utils.statue.Resource
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,25 +32,63 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initAdapter()
-        getSearchResult()
-        pagingSearchResultInRecyclerview()
+        sendSearchQuery()
+        getListOfSearch()
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initAdapter() {
         binding.recyclerView.setHasFixedSize(true)
-        binding.recyclerView.adapter = adapter
+
         binding.recyclerView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.setOnTouchListener { _, motionEvent ->
             binding.recyclerView.onTouchEvent(motionEvent)
             true
         }
+
+        binding.recyclerView.adapter = adapter.withLoadStateHeaderAndFooter(
+            header = SearchRepoStateAdapter { adapter.retry() },
+            footer = SearchRepoStateAdapter { adapter.retry() }
+        )
     }
 
-    private fun getSearchResult() {
+    private fun getListOfSearch() {
+        viewModel.searchResponse.observe(this) {
+            adapter.submitData(lifecycle, it)
+        }
+
+        adapter.addLoadStateListener { loadState ->
+            binding.apply {
+                progressBar.isVisible = loadState.source.refresh is LoadState.Loading
+                recyclerView.isVisible = loadState.source.refresh is LoadState.NotLoading
+                mainImage.isVisible = loadState.source.refresh is LoadState.Error
+                errorSearchText.isVisible = loadState.source.refresh is LoadState.Error
+                welcomeSearchText.isVisible = loadState.source.refresh !is LoadState.Loading
+
+                // empty view
+                if (loadState.source.refresh is LoadState.NotLoading &&
+                    loadState.append.endOfPaginationReached &&
+                    adapter.itemCount < 1
+                ) {
+                    recyclerView.isVisible = false
+                    errorSearchText.isVisible = true
+                } else {
+                    errorSearchText.isVisible = false
+                }
+            }
+        }
+    }
+
+    private fun sendSearchQuery() {
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
+ feature/paging_library
+                query?.let {
+                    binding.recyclerView.scrollToPosition(0)
+                    viewModel.search(it)
+                    binding.searchView.clearFocus()
+
                 searchViewModel.getSearchResponse(query!!).observe(this@MainActivity) {
                     when (it) {
                         is Resource.Loading -> {
@@ -75,6 +119,7 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                     }
+ develop
                 }
                 return false
             }
@@ -84,6 +129,8 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
+ feature/paging_library
+
 
     private fun pagingSearchResultInRecyclerview() {
         binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -129,4 +176,5 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
+ develop
 }

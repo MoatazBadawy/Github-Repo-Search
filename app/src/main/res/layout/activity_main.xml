@@ -88,27 +88,15 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:indeterminateTint="@color/white"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view" />
 
-    <ProgressBar
-        android:id="@+id/load_more_progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:indeterminateTint="@color/white"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <ImageView
         android:id="@+id/main_image"
-        android:layout_width="207dp"
-        android:layout_height="236dp"
+        android:layout_width="243dp"
+        android:layout_height="272dp"
         android:src="@drawable/ic_start_search"
         app:layout_constraintBottom_toTopOf="@+id/welcome_search_text"
         app:layout_constraintEnd_toEndOf="parent"
@@ -124,6 +112,7 @@
         android:text="@string/search_for_your_favourite_repos"
         android:textColor="#ffffff"
         android:textSize="20sp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/main_image"
         app:layout_constraintStart_toStartOf="@+id/main_image"
@@ -138,7 +127,6 @@
         android:text="@string/no_repos_found_try_something_else"
         android:textColor="#ffffff"
         android:textSize="20sp"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/main_image"
         app:layout_constraintStart_toStartOf="@+id/main_image"

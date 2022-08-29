@@ -1,24 +1,20 @@
 package com.moataz.githubsearch.data.repository
 
-import com.moataz.githubsearch.data.model.SearchResponse
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.liveData
 import com.moataz.githubsearch.data.request.ApiClient
-import com.moataz.githubsearch.utils.statue.Resource
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 
 class SearchRepository {
+    private val apiClient = ApiClient.searchApi
 
-    suspend fun getSearchResult(query: String, page: Int): Flow<Resource<SearchResponse>> = flow {
-        try {
-            emit(Resource.Loading)
-            val response = ApiClient.searchApi.getSearchResponse(query, page)
-            emit(Resource.Success(response))
-        } catch (e: Exception) {
-            emit(Resource.Error(e.message ?: "Error"))
-        }
-    }.flowOn(Dispatchers.IO)
+    fun getSearchResult(query: String?) =
+        Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                maxSize = 30,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = { RepoPagingSource(apiClient, query) }
+        ).liveData
 }
