@@ -112,6 +112,7 @@
         android:text="@string/search_for_your_favourite_repos"
         android:textColor="#ffffff"
         android:textSize="20sp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/main_image"
         app:layout_constraintStart_toStartOf="@+id/main_image"
