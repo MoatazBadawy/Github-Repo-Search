@@ -11,7 +11,7 @@ class SearchViewModel : ViewModel() {
     private val repository = SearchRepository()
 
     private val state: SavedStateHandle = SavedStateHandle()
-    private val currentQuery = state.getLiveData(CURRENT_QUERY, DEFAULT_QUERY)
+    private val currentQuery = state.getLiveData(CURRENT_QUERY, "")
 
     val searchResponse = currentQuery.switchMap { queryString ->
         repository.getSearchResult(queryString).cachedIn(viewModelScope)
@@ -23,6 +23,5 @@ class SearchViewModel : ViewModel() {
 
     companion object {
         private const val CURRENT_QUERY = "current_query"
-        private val DEFAULT_QUERY: String? = null
     }
 }

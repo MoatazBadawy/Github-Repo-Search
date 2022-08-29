@@ -76,7 +76,6 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     welcomeSearchText.visibility = View.VISIBLE
                 }
-
             }
         }
     }
