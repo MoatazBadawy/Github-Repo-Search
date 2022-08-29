@@ -8,15 +8,23 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
+ feature/paging_library
 import com.moataz.githubsearch.databinding.ActivityMainBinding
 import com.moataz.githubsearch.ui.adapter.SearchAdapter
 import com.moataz.githubsearch.ui.adapter.SearchRepoStateAdapter
+
+import androidx.recyclerview.widget.RecyclerView
+import com.moataz.githubsearch.databinding.ActivityMainBinding
+import com.moataz.githubsearch.ui.adapter.SearchAdapter
+import com.moataz.githubsearch.ui.viewmodel.SearchMoreViewModel
+ develop
 import com.moataz.githubsearch.ui.viewmodel.SearchViewModel
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private val viewModel: SearchViewModel by viewModels()
+    private val searchViewModel: SearchViewModel by viewModels()
+    private val searchMoreViewModel: SearchMoreViewModel by viewModels()
     private val adapter = SearchAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,10 +83,43 @@ class MainActivity : AppCompatActivity() {
     private fun sendSearchQuery() {
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
+ feature/paging_library
                 query?.let {
                     binding.recyclerView.scrollToPosition(0)
                     viewModel.search(it)
                     binding.searchView.clearFocus()
+
+                searchViewModel.getSearchResponse(query!!).observe(this@MainActivity) {
+                    when (it) {
+                        is Resource.Loading -> {
+                            binding.searchView.clearFocus()
+                            binding.apply {
+                                progressBar.visibility = View.VISIBLE
+                                mainImage.visibility = View.GONE
+                                welcomeSearchText.visibility = View.GONE
+                                errorSearchText.visibility = View.GONE
+                            }
+                        }
+                        is Resource.Success -> {
+                            binding.searchView.clearFocus()
+                            binding.apply {
+                                progressBar.visibility = View.GONE
+                            }
+                            adapter.setData(it.data?.items!!)
+                        }
+                        is Resource.Error -> {
+                            binding.searchView.clearFocus()
+                            binding.apply {
+                                progressBar.visibility = View.GONE
+                                welcomeSearchText.visibility = View.GONE
+                                adapter.clearData()
+                                mainImage.visibility = View.VISIBLE
+                                errorSearchText.visibility = View.VISIBLE
+
+                            }
+                        }
+                    }
+ develop
                 }
                 return false
             }
@@ -88,4 +129,52 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
+ feature/paging_library
+
+
+    private fun pagingSearchResultInRecyclerview() {
+        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(
+                recyclerView: RecyclerView,
+                dx: Int,
+                dy: Int
+            ) {
+                super.onScrolled(recyclerView, dx, dy)
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+                val totalItemCount = layoutManager.itemCount
+                val currentPage = searchMoreViewModel.currentPage
+
+                if (lastVisibleItemPosition == totalItemCount - 1) {
+                    searchMoreViewModel.getMoreSearchResponseResult(
+                        binding.searchView.query.toString(), currentPage
+                    )
+                        .observe(this@MainActivity) {
+                            when (it) {
+                                is Resource.Loading -> {
+                                    binding.searchView.clearFocus()
+                                    binding.apply {
+                                        loadMoreProgressBar.visibility = View.VISIBLE
+                                    }
+                                }
+                                is Resource.Success -> {
+                                    binding.searchView.clearFocus()
+                                    binding.apply {
+                                        loadMoreProgressBar.visibility = View.GONE
+                                    }
+                                    adapter.updateData(it.data?.items!!)
+                                }
+                                is Resource.Error -> {
+                                    binding.searchView.clearFocus()
+                                    binding.apply {
+                                        loadMoreProgressBar.visibility = View.GONE
+                                    }
+                                }
+                            }
+                        }
+                }
+            }
+        })
+    }
+ develop
 }
