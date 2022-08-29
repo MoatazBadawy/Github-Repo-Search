@@ -27,6 +27,9 @@ class MainActivity : AppCompatActivity() {
         initAdapter()
         sendSearchQuery()
         getListOfSearch()
+        initLoadState()
+        initLoadStateWhenEmptyView()
+        initLoadStateShowWelcomeMessage()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -46,40 +49,6 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    private fun getListOfSearch() {
-        viewModel.searchResponse.observe(this) {
-            adapter.submitData(lifecycle, it)
-        }
-
-        adapter.addLoadStateListener { loadState ->
-            binding.apply {
-                progressBar.isVisible = loadState.source.refresh is LoadState.Loading
-                recyclerView.isVisible = loadState.source.refresh is LoadState.NotLoading
-                mainImage.isVisible = loadState.source.refresh is LoadState.Error
-                errorSearchText.isVisible = loadState.source.refresh is LoadState.Error
-
-                // empty view
-                if (loadState.source.refresh is LoadState.NotLoading &&
-                    loadState.append.endOfPaginationReached &&
-                    adapter.itemCount < 1
-                ) {
-                    recyclerView.isVisible = false
-                    errorSearchText.isVisible = true
-                    mainImage.isVisible = true
-                } else {
-                    errorSearchText.isVisible = false
-                }
-
-                // welcome message
-                if (adapter.itemCount > 1 || loadState.source.refresh is LoadState.Loading || loadState.source.refresh !is LoadState.Error) {
-                    welcomeSearchText.visibility = View.GONE
-                } else {
-                    welcomeSearchText.visibility = View.VISIBLE
-                }
-            }
-        }
-    }
-
     private fun sendSearchQuery() {
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -95,5 +64,51 @@ class MainActivity : AppCompatActivity() {
                 return false
             }
         })
+    }
+
+    private fun getListOfSearch() {
+        viewModel.searchResponse.observe(this) {
+            adapter.submitData(lifecycle, it)
+        }
+    }
+
+    private fun initLoadState() {
+        adapter.addLoadStateListener { loadState ->
+            binding.apply {
+                progressBar.isVisible = loadState.source.refresh is LoadState.Loading
+                recyclerView.isVisible = loadState.source.refresh is LoadState.NotLoading
+                mainImage.isVisible = loadState.source.refresh is LoadState.Error
+                errorSearchText.isVisible = loadState.source.refresh is LoadState.Error
+            }
+        }
+    }
+
+    private fun initLoadStateWhenEmptyView() {
+        adapter.addLoadStateListener { loadState ->
+            binding.apply {
+                if (loadState.source.refresh is LoadState.NotLoading &&
+                    loadState.append.endOfPaginationReached &&
+                    adapter.itemCount < 1
+                ) {
+                    recyclerView.isVisible = false
+                    errorSearchText.isVisible = true
+                    mainImage.isVisible = true
+                } else {
+                    errorSearchText.isVisible = false
+                }
+            }
+        }
+    }
+
+    private fun initLoadStateShowWelcomeMessage() {
+        adapter.addLoadStateListener { loadState ->
+            binding.apply {
+                if (adapter.itemCount > 1 || loadState.source.refresh is LoadState.Loading || loadState.source.refresh !is LoadState.Error) {
+                    welcomeSearchText.visibility = View.GONE
+                } else {
+                    welcomeSearchText.visibility = View.VISIBLE
+                }
+            }
+        }
     }
 }
