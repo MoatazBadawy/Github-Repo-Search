@@ -10,30 +10,11 @@ import com.moataz.githubsearch.R
 import com.moataz.githubsearch.data.model.Item
 import com.moataz.githubsearch.databinding.ItemRepoBinding
 
- feature/paging_library
 class SearchAdapter :
     PagingDataAdapter<Item, SearchAdapter.SearchViewHolder>(REPO_SEARCH_COMPARATOR) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
 
-class SearchAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var items: ArrayList<Item> = ArrayList()
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun setData(items: List<Item>) {
-        this.items.clear()
-        this.items.addAll(items)
-        notifyDataSetChanged()
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun updateData(items: List<Item>) {
-        this.items.addAll(items)
-        notifyDataSetChanged()
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
- develop
         return SearchViewHolder(
             DataBindingUtil.inflate(
                 LayoutInflater.from(parent.context),
