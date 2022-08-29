@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Github Search</string>
+    <string name="github_search">ex: momo repo</string>
+    <string name="search_for_your_favourite_repos">Search for your favourite repos</string>
+    <string name="no_repos_found_try_something_else">No repos found, try something else</string>
+    <string name="results_could_not_be_loaded">Results could not be loaded</string>
+    <string name="retry">Retry</string>
 </resources>
