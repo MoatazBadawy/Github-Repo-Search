@@ -7,12 +7,14 @@ import android.widget.SearchView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.moataz.githubsearch.databinding.ActivityMainBinding
 import com.moataz.githubsearch.ui.adapter.SearchAdapter
 import com.moataz.githubsearch.ui.adapter.SearchRepoStateAdapter
 import com.moataz.githubsearch.ui.viewmodel.SearchViewModel
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -67,9 +69,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getListOfSearch() {
-        viewModel.searchResponse.observe(this) {
-            adapter.submitData(lifecycle, it)
+        lifecycleScope.launch {
+            viewModel.results.collect {
+                adapter.submitData(it)
+            }
         }
+
     }
 
     private fun initLoadState() {
