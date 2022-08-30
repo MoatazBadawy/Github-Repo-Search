@@ -93,8 +93,6 @@ class MainActivity : AppCompatActivity() {
                     recyclerView.isVisible = false
                     errorSearchText.isVisible = true
                     mainImage.isVisible = true
-                } else {
-                    errorSearchText.isVisible = false
                 }
             }
         }
@@ -107,6 +105,7 @@ class MainActivity : AppCompatActivity() {
                     welcomeSearchText.visibility = View.GONE
                 } else {
                     welcomeSearchText.visibility = View.VISIBLE
+                    errorSearchText.isVisible = false
                 }
             }
         }

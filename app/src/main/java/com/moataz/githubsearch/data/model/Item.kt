@@ -1,5 +1,8 @@
 package com.moataz.githubsearch.data.model
 
+import androidx.annotation.Keep
+
+@Keep
 data class Item(
     val id: Int?,
     val full_name: String?,
