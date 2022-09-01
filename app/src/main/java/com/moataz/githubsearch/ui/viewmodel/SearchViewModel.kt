@@ -21,5 +21,4 @@ class SearchViewModel : ViewModel() {
     fun search(query: String) {
         this.query.value = query
     }
-
 }

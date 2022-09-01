@@ -11,7 +11,7 @@ import com.moataz.githubsearch.data.model.Item
 import com.moataz.githubsearch.databinding.ItemRepoBinding
 
 class SearchAdapter :
-    PagingDataAdapter<Item, SearchAdapter.SearchViewHolder>(REPO_SEARCH_COMPARATOR) {
+    PagingDataAdapter<Item, SearchAdapter.SearchViewHolder>(RepoSearchDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
 
@@ -36,14 +36,14 @@ class SearchAdapter :
         RecyclerView.ViewHolder(
             itemRepoBinding.root
         )
+}
 
-    companion object {
-        private val REPO_SEARCH_COMPARATOR = object : DiffUtil.ItemCallback<Item>() {
-            override fun areItemsTheSame(oldItem: Item, newItem: Item) =
-                oldItem.id == newItem.id
+class RepoSearchDiffCallback : DiffUtil.ItemCallback<Item>() {
+    override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
+        return oldItem.full_name == newItem.full_name
+    }
 
-            override fun areContentsTheSame(oldItem: Item, newItem: Item) =
-                oldItem == newItem
-        }
+    override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
+        return oldItem == newItem
     }
 }

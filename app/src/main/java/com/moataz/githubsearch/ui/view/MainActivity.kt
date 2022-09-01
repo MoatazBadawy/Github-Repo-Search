@@ -74,7 +74,6 @@ class MainActivity : AppCompatActivity() {
                 adapter.submitData(it)
             }
         }
-
     }
 
     private fun initLoadState() {
