@@ -12,10 +12,8 @@ import kotlinx.coroutines.flow.Flow
 class SearchRepository {
     private val apiClient = ApiClient.searchApi
 
-    fun getSearchResult(query: String): Flow<PagingData<Item>> {
-        return Pager(
-            config = PagingConfig(pageSize = 20),
-            pagingSourceFactory = { RepoPagingSource(apiClient, query) }
-        ).flow
-    }
+    fun getSearchResult(query: String) = Pager(
+        config = PagingConfig(pageSize = 20),
+        pagingSourceFactory = { RepoPagingSource(apiClient, query) }
+    ).flow
 }
